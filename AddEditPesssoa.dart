@@ -1,3 +1,5 @@
+import 'package:escolaflutter/dbhelper.dart';
+import 'package:escolaflutter/models/AlunoModel.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
@@ -136,10 +138,15 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
             Center(
               child: FormHelper.submitButton("Salvar", () {
                 if(validateAndSave()){
-                  print(model!.nome);
+                  if(isEditMode){
+                    ApiSql().updateAluno(model!.matricula, model!);
+                  }
+                  else{
+                    model!.matricula = AlunoModel().addMatricula();
+                    ApiSql().addItem(model!);
+                  }
 
-                  // Algum erro nesse método abaixo
-                  model!.addMatricula();
+                  Navigator.pushNamedAndRemoveUntil(context, '/alunos', (route) => false);
                 }
               },
                 btnColor: Colors.red,),

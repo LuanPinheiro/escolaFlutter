@@ -83,7 +83,7 @@ class CardModelPessoa extends StatelessWidget {
                               // Criando um botão de deletar pessoa, no container da mesma
                               child: const Icon(Icons.delete, color: Colors.red),
                               onTap: () {
-                                // onDelete!(model);
+                                onDelete!(model);
                               },
                             ),
                           ]
