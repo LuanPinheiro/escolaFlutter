@@ -84,6 +84,10 @@ class CardModelPessoa extends StatelessWidget {
                               child: const Icon(Icons.delete, color: Colors.red),
                               onTap: () {
                                 onDelete!(model);
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text("Aluno excluído"),
+                                ));
                               },
                             ),
                           ]

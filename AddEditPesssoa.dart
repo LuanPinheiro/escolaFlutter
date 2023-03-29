@@ -1,5 +1,4 @@
 import 'package:escolaflutter/dbhelper.dart';
-import 'package:escolaflutter/models/AlunoModel.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
@@ -140,16 +139,23 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                 if(validateAndSave()){
                   if(isEditMode){
                     ApiSql().updateAluno(model!.matricula, model!);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text("Aluno Atualizado"),
+                    ));
                   }
                   else{
-                    model!.matricula = AlunoModel().addMatricula();
-                    ApiSql().addItem(model!);
+                    ApiSql().addAluno(model!);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text("Aluno Adicionado"),
+                    ));
                   }
-
-                  Navigator.pushNamedAndRemoveUntil(context, '/alunos', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(context, "/alunos", ModalRoute.withName('/'));
                 }
               },
-                btnColor: Colors.red,),
+              btnColor: Colors.red,
+              ),
             )
           ]
       ),
@@ -164,5 +170,12 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
     }
 
     return false;
+  }
+
+  // Widget que mostra um texto confirmando o salvamento
+  Widget textSave(){
+    return Center(
+      child: Text("Salvo"),
+    );
   }
 }
