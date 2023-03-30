@@ -11,10 +11,11 @@ class Aluno extends StatefulWidget {
 
 class _AlunoState extends State<Aluno> {
 
+
   // Carrega do banco de dados os alunos em uma lista alunos
   Widget loadAlunos(){
     return FutureBuilder(
-      future: ApiSql().fetchAlunos(),
+      future: ApiSql().fetchPessoas("alunos"),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> alunos) {
         if(alunos.hasData){
           return listaAlunos(alunos.data);
@@ -47,9 +48,11 @@ class _AlunoState extends State<Aluno> {
                   return CardModelPessoa(
                     model: alunos[index],
                     onDelete: (Pessoa aluno) {
-                      ApiSql().deleteAluno(aluno.matricula);
+                      ApiSql().deletePessoa(aluno.matricula, "alunos");
                       setState(() {});
                     },
+                    route: "/alunos",
+                    output: "Aluno",
                   );
                 },
               ),
@@ -82,7 +85,9 @@ class _AlunoState extends State<Aluno> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.pushNamed(context, '/add-pessoa');
+          Navigator.pushNamed(context, '/add-pessoa', arguments: {
+            "route": "/alunos",
+          });
         },
         child: Icon(Icons.add),
       ),

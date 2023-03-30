@@ -1,26 +1,26 @@
-import 'Pessoa.dart';
+import 'package:escolaflutter/models/DisciplinaModel.dart';
 import 'package:flutter/material.dart';
 
-class CardModelPessoa extends StatelessWidget {
+class CardModelDisciplina extends StatelessWidget {
 
-  final Pessoa? model;
+  final DisciplinaModel? model;
   final Function? onDelete;
   final String? route;
   final String? output;
-  const CardModelPessoa({Key? key, this.model, this.onDelete, this.route, this.output}) : super(key: key);
+  const CardModelDisciplina({Key? key, this.model, this.onDelete, this.route, this.output}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Container(
-        width: 200,
-        decoration: BoxDecoration(
-          color: Colors.grey[400],
-        ),
-        child: pessoaWidget(context),
-      )
+        elevation: 0,
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Container(
+          width: 200,
+          decoration: BoxDecoration(
+            color: Colors.grey[400],
+          ),
+          child: pessoaWidget(context),
+        )
     );
   }
 
@@ -45,19 +45,13 @@ class CardModelPessoa extends StatelessWidget {
                     ),
                   ),
                   Text(
-                      "CPF: ${model!.cpf}",
+                      "Codigo: ${model!.codigo}",
                       style: TextStyle(
                         color: Colors.black,
                       )
                   ),
                   Text(
-                      "Matricula: ${model!.matricula}",
-                      style: TextStyle(
-                        color: Colors.black,
-                      )
-                  ),
-                  Text(
-                      "Sexo: ${model!.sexo}",
+                      "Semestre: ${model!.semestre}",
                       style: TextStyle(
                         color: Colors.black,
                       )
@@ -75,7 +69,7 @@ class CardModelPessoa extends StatelessWidget {
                               // Criando um botão de editar pessoa, no container da mesma
                               child: const Icon(Icons.edit),
                               onTap: () {
-                                Navigator.of(context).pushNamed('/edit-pessoa', arguments: {
+                                Navigator.of(context).pushNamed('/edit-disciplina', arguments: {
                                   'model': model,
                                   'route': route,
                                 });

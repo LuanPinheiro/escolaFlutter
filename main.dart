@@ -14,5 +14,6 @@ void main() => runApp(MaterialApp(
     '/disciplinas': (context) => Disciplina(),
     '/edit-pessoa': (context) => AddEditPessoa(),
     '/add-pessoa': (context) => AddEditPessoa(),
+    '/edit-disciplina': (context) => AddEditDisciplina();
   }
 ));

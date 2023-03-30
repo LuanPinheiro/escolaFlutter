@@ -14,6 +14,8 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
   bool isAPICallProcess = false;
   Pessoa? model;
   bool isEditMode = false;
+  String route = "";
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +44,17 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
   @override
   void initState(){
     super.initState();
-    model = Pessoa();
 
     Future.delayed(Duration.zero, () {
       if(ModalRoute.of(context)?.settings.arguments != null){
         final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+        final rotaAtual = ModalRoute.of(context)!.settings.name;
 
-        model = arguments["model"];
-        isEditMode = true;
+        model = arguments["model"] != null ? arguments["model"] : Pessoa();
+        route = arguments["route"] != null ? arguments["route"] : null;
+        if(rotaAtual == "/edit-pessoa"){
+          isEditMode = true;
+        }
         setState(() {});
       }
     });
@@ -135,23 +140,34 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
               height: 20,
             ),
             Center(
-              child: FormHelper.submitButton("Salvar", () {
+              child: FormHelper.submitButton(model!.matricula == null ? "Adicionar" : "Atualizar", () {
                 if(validateAndSave()){
+                  String table = "";
+                  String output = "";
+                  if(route == "/alunos"){
+                    table = "alunos";
+                    output = "Aluno";
+                  }
+                  else{
+                    table = "professores";
+                    output = "Professor";
+                  }
+
                   if(isEditMode){
-                    ApiSql().updateAluno(model!.matricula, model!);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    ApiSql().updatePessoa(model!.matricula, model!, table);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content: Text("Aluno Atualizado"),
+                      content: Text("$output Atualizado"),
                     ));
                   }
                   else{
-                    ApiSql().addAluno(model!);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    ApiSql().addPessoa(model!, table);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content: Text("Aluno Adicionado"),
+                      content: Text("$output Adicionado"),
                     ));
                   }
-                  Navigator.pushNamedAndRemoveUntil(context, "/alunos", ModalRoute.withName('/'));
+                  Navigator.pushNamedAndRemoveUntil(context, route!, ModalRoute.withName('/'));
                 }
               },
               btnColor: Colors.red,
