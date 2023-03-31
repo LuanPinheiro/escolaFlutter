@@ -6,8 +6,7 @@ class CardModelDisciplina extends StatelessWidget {
   final DisciplinaModel? model;
   final Function? onDelete;
   final String? route;
-  final String? output;
-  const CardModelDisciplina({Key? key, this.model, this.onDelete, this.route, this.output}) : super(key: key);
+  const CardModelDisciplina({Key? key, this.model, this.onDelete, this.route}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +55,12 @@ class CardModelDisciplina extends StatelessWidget {
                         color: Colors.black,
                       )
                   ),
+                  Text(
+                      "Matricula Professor: ${model!.prof_matricula}",
+                      style: TextStyle(
+                        color: Colors.black,
+                      )
+                  ),
                   const SizedBox(
                     // Tamanho da caixa com as informações do container
                     height: 10,
@@ -83,7 +88,7 @@ class CardModelDisciplina extends StatelessWidget {
                                 onDelete!(model);
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   backgroundColor: Colors.red,
-                                  content: Text("$output excluído"),
+                                  content: Text("Disciplina excluída"),
                                 ));
                               },
                             ),

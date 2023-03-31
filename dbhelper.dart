@@ -14,7 +14,7 @@ class ApiSql{
     final path = join(directory.path,"escola.db"); //create path to database
 
     // PARA DEBUG
-    // databaseFactory.deleteDatabase(path);
+    databaseFactory.deleteDatabase(path);
 
     return await openDatabase( //open the database or create a database if there isn't any
         path,
@@ -38,7 +38,9 @@ class ApiSql{
             CREATE TABLE IF NOT EXISTS disciplinas(
             nome TEXT,
             codigo TEXT,
-            semestre TEXT
+            semestre TEXT,
+            prof_matricula INTEGER,
+            foreign key (prof_matricula) REFERENCES professores(matricula)
           )""");
           // Problemas com o autoincrement iniciando em um numero diferente de 1
           // await db.execute("""
@@ -108,7 +110,7 @@ class ApiSql{
     return result;
   }
   // Delete
-  Future<int> deleteDisciplina(int? codigo) async{ //returns number of items deleted
+  Future<int> deleteDisciplina(String? codigo) async{ //returns number of items deleted
     final db = await init();
 
     int result = await db.delete(
@@ -134,7 +136,7 @@ class ApiSql{
     return result;
   }
   // Update
-  Future<int> updateDisciplina(int? codigo, DisciplinaModel item) async{ // returns the number of rows updated
+  Future<int> updateDisciplina(String? codigo, DisciplinaModel item) async{ // returns the number of rows updated
 
     final db = await init();
 

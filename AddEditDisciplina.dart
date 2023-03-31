@@ -1,21 +1,77 @@
 import 'package:escolaflutter/dbhelper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'models/DisciplinaModel.dart';
 import 'models/Pessoa.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class AddEditPessoa extends StatefulWidget {
+class AddEditDisciplina extends StatefulWidget {
   @override
-  State<AddEditPessoa> createState() => _AddEditPessoaState();
+  State<AddEditDisciplina> createState() => _AddEditDisciplina();
 }
 
-class _AddEditPessoaState extends State<AddEditPessoa> {
+class _AddEditDisciplina extends State<AddEditDisciplina> {
   static final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
   bool isAPICallProcess = false;
-  Pessoa? model;
+  DisciplinaModel? model;
   bool isEditMode = false;
   String route = "";
+  String? selected;
 
+  // Carrega do banco de dados os alunos em uma lista alunos
+  Widget loadProfessores(){ // MODULARIZAR ESTA FUNÇÃO
+    return FutureBuilder(
+      future: ApiSql().fetchPessoas("professores"),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> professores) {
+        if(professores.hasData){
+          return Card(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: ListTile(
+                  title: const Text('Professor'),
+                  enabled: true,
+                  trailing: const Icon(Icons.arrow_drop_down),
+                  shape: const OutlineInputBorder(),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("Escolha um professor"),
+                        content: SizedBox(
+                          width: double.maxFinite,
+                          child: CupertinoScrollbar(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: professores.data?.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(
+                                      professores.data![index].nome,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                    onTap: () {
+                                      print("Clicou");
+                                    },
+                                  );
+                                }),
+                          ),
+                        ),
+                      ),
+                    );
+                  }));
+        }
+        return const Center(
+          child: SpinKitRing(
+            color: Colors.blue,
+            size: 60,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +106,7 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
         final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
         final rotaAtual = ModalRoute.of(context)!.settings.name;
 
-        model = arguments["model"] != null ? arguments["model"] : Pessoa();
+        model = arguments["model"] != null ? arguments["model"] : DisciplinaModel();
         route = arguments["route"] != null ? arguments["route"] : null;
         if(rotaAtual == "/edit-pessoa"){
           isEditMode = true;
@@ -72,7 +128,7 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
               child: FormHelper.inputFieldWidget(
                 context,
                 "nome",
-                "Nome da Pessoa",
+                "Nome da Disciplina",
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
                     return "O campo nome não pode ser vazio";
@@ -94,18 +150,18 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: FormHelper.inputFieldWidget(
                 context,
-                "cpf",
-                "CPF da Pessoa",
+                "codigo",
+                "Código da Disciplina",
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
-                    return "O campo CPF não pode ser vazio";
+                    return "O campo código não pode ser vazio";
                   }
                   return null;
                 },
                     (onSavedVal) {
-                  model!.cpf = onSavedVal;
+                  model!.codigo = onSavedVal;
                 },
-                initialValue: model!.cpf == null ? "" : model!.cpf.toString(),
+                initialValue: model!.codigo == null ? "" : model!.codigo.toString(),
                 // Abaixo configurações das cores do formulário
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
@@ -117,8 +173,8 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: FormHelper.inputFieldWidget(
                 context,
-                "sexo",
-                "Sexo da Pessoa",
+                "semestre",
+                "Semestre da Disciplina",
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
                     return "O campo Sexo não pode ser vazio";
@@ -126,9 +182,9 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                   return null;
                 },
                     (onSavedVal) {
-                  model!.sexo = onSavedVal;
+                  model!.semestre = onSavedVal;
                 },
-                initialValue: model!.sexo == null ? "" : model!.sexo.toString(),
+                initialValue: model!.semestre == null ? "" : model!.semestre.toString(),
                 // Abaixo configurações das cores do formulário
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
@@ -139,38 +195,35 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
             const SizedBox(
               height: 20,
             ),
+            loadProfessores(),
+            Divider(
+              height: 20,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Center(
-              child: FormHelper.submitButton(model!.matricula == null ? "Adicionar" : "Atualizar", () {
+              child: FormHelper.submitButton(model!.codigo == null ? "Adicionar" : "Atualizar", () {
                 if(validateAndSave()){
-                  String table = "";
-                  String output = "";
-                  if(route == "/alunos"){
-                    table = "alunos";
-                    output = "Aluno";
-                  }
-                  else{
-                    table = "professores";
-                    output = "Professor";
-                  }
-
                   if(isEditMode){
-                    ApiSql().updatePessoa(model!.matricula, model!, table);
+                    ApiSql().updateDisciplina(model!.codigo, model!);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content: Text("$output Atualizado"),
+                      content: Text("Disciplina Atualizada"),
                     ));
                   }
                   else{
-                    ApiSql().addPessoa(model!, table);
+                    ApiSql().addDisciplina(model!);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       backgroundColor: Colors.green,
-                      content: Text("$output Adicionado"),
+                      content: Text("Disciplina Adicionada"),
                     ));
                   }
                   Navigator.pushNamedAndRemoveUntil(context, route!, ModalRoute.withName('/'));
                 }
               },
-              btnColor: Colors.red,
+                btnColor: Colors.red,
               ),
             )
           ]
