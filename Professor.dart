@@ -48,6 +48,7 @@ class _ProfessorState extends State<Professor> {
                     model: professores[index],
                     onDelete: (Pessoa professor) {
                       ApiSql().deletePessoa(professor.matricula, "professores");
+                      ApiSql().retiraProfDisciplinas(professor.matricula);
                       setState(() {});
                     },
                     route: "/professores",

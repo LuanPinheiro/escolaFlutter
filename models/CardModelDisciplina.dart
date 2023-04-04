@@ -147,7 +147,6 @@ class CardModelDisciplina extends StatelessWidget {
                                                     mat.matricula_aluno = alunos.data![index].matricula;
                                                     mat.codigo_disciplina = model!.codigo;
 
-
                                                     await ApiSql().addAlunoEmDisciplina(mat);
                                                     Navigator.of(context).pop();
                                                   },

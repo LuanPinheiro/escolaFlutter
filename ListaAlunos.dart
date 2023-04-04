@@ -81,14 +81,8 @@ class _ListaAlunosState extends State<ListaAlunos> {
                       // Criando um botão de editar pessoa, no container da mesma
                       child: const Icon(Icons.remove_circle_rounded),
                       onTap: () async {
-                        MatriculadosModel mat = MatriculadosModel();
-                        mat.matricula_aluno = alunos.data![index].matricula;
-                        mat.codigo_disciplina = model!.codigo;
-                        print(model!.codigo.toString());
-
-
-                        await ApiSql().removerAlunoEmDisciplina(mat);
-                        Navigator.of(context).pop();
+                        await ApiSql().deleteAlunoEmDisciplina(alunos[index].matricula_aluno, model!.codigo);
+                        setState(() {});
                       },
                     ),
                   );

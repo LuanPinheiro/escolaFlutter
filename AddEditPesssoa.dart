@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'models/Pessoa.dart';
+import 'Validar.dart';
 
 class AddEditPessoa extends StatefulWidget {
   @override
@@ -77,6 +78,12 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                   if(onValidateVal.isEmpty){
                     return "O campo nome não pode ser vazio";
                   }
+                  else if(temNumeros(onValidateVal)){
+                    return "O campo nome não pode ter números";
+                  }
+                  if(onValidateVal.toString().length < 3){
+                    return "O campo nome deve ter no mínimo 3 letras";
+                  }
                   return null;
                 },
                     (onSavedVal) => {
@@ -99,6 +106,15 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
                     return "O campo CPF não pode ser vazio";
+                  }
+                  if(temCaracteres(onValidateVal)){
+                    return "CPF com apenas números";
+                  }
+                  else if(onValidateVal.length != 11){
+                    return "CPF deve ter 11 números";
+                  }
+                  else if(digitosVerificadores(onValidateVal) == false){
+                    return "CPF Inválido";
                   }
                   return null;
                 },

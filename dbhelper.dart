@@ -1,4 +1,5 @@
 import 'package:escolaflutter/models/MatriculadosModel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart'; //sqflite package
 import 'package:path_provider/path_provider.dart'; //path_provider package
 import 'package:path/path.dart'; //used to join paths
@@ -63,7 +64,6 @@ class ApiSql{
   Future<int> addPessoa(Pessoa item, String table) async{ //returns number of items inserted as an integer
     final db = await init(); //open database
 
-    print(item.matricula);
     return db.insert(table, item.toMap(), //toMap() function from MemoModel
       conflictAlgorithm: ConflictAlgorithm.ignore, //ignores conflicts due to duplicate entries
     );
@@ -158,14 +158,25 @@ class ApiSql{
     return result;
   }
   // Delete
-  Future<int> deleteAlunoEmDisciplina(int? matricula, String table) async{ //returns number of items deleted
+  Future<int> deleteAlunoEmDisciplina(int? matricula, String? codigo) async{ //returns number of items deleted
     final db = await init();
 
-    int result = await db.delete(
+    late int result;
+
+    if(codigo == null){
+      result = await db.delete(
         "matriculados", //table name
-        where: "matricula = ?, codigo = ?",
+        where: "matricula_aluno = ?",
+        whereArgs: [matricula],
+      );// use whereArgs to avoid SQL injection
+    }
+    else{
+      result = await db.delete(
+        "matriculados", //table name
+        where: "matricula_aluno = ? and codigo_disciplina = ?",
         whereArgs: [matricula, codigo], // use whereArgs to avoid SQL injection
-    );
+      );
+    }
 
     return result;
   }
@@ -194,6 +205,22 @@ class ApiSql{
         where: "codigo = ?",
         whereArgs: [codigo]
     );
+    return result;
+  }
+  // Update
+  Future<int> retiraProfDisciplinas(int? matricula) async{ // returns the number of rows updated
+
+    final db = await init();
+
+    int result = await db.update(
+      "disciplinas",
+      {'prof_matricula': -1},
+      where: "prof_matricula = ?",
+      whereArgs: [matricula]
+    );
+
+    print(result);
+
     return result;
   }
 }

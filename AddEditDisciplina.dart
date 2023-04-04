@@ -5,6 +5,7 @@ import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'models/DisciplinaModel.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'Validar.dart';
 
 class AddEditDisciplina extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
   bool isEditMode = false;
   String route = "";
   String? selected;
-  String profAtual = "Professor";
+  String profAtual = "Professores";
 
   // Carrega do banco de dados os alunos em uma lista alunos
   Widget loadProfessores(){ // MODULARIZAR ESTA FUNÇÃO
@@ -27,7 +28,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> professores) {
         if(professores.hasData){
           return Card(
-              margin: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: ListTile(
                   title: Text(profAtual),
                   enabled: true,
@@ -136,6 +137,12 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
                     return "O campo nome não pode ser vazio";
+                  }
+                  else if(temNumeros(onValidateVal)){
+                    return "O campo nome não pode ter números";
+                  }
+                  if(onValidateVal.length < 3){
+                    return "O campo nome deve ter no mínimo 3 letras";
                   }
                   return null;
                 },

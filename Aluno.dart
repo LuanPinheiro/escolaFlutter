@@ -49,6 +49,7 @@ class _AlunoState extends State<Aluno> {
                     model: alunos[index],
                     onDelete: (Pessoa aluno) {
                       ApiSql().deletePessoa(aluno.matricula, "alunos");
+                      ApiSql().deleteAlunoEmDisciplina(aluno.matricula, null);
                       setState(() {});
                     },
                     route: "/alunos",
