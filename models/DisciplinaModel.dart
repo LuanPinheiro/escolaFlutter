@@ -16,7 +16,12 @@ class DisciplinaModel {
       "nome" : nome,
       "codigo" : codigo,
       "semestre" : semestre,
-      "prof_matricula" : prof_matricula,
+      "prof_matricula" : prof_matricula.toString(),
     };
+  }
+
+  @override
+  String toString() {
+    return 'DisciplinaModel{nome: $nome, codigo: $codigo, semestre: $semestre, prof_matricula: $prof_matricula}';
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'models/DisciplinaModel.dart';
-import 'models/Pessoa.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AddEditDisciplina extends StatefulWidget {
@@ -19,6 +18,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
   bool isEditMode = false;
   String route = "";
   String? selected;
+  String profAtual = "Professor";
 
   // Carrega do banco de dados os alunos em uma lista alunos
   Widget loadProfessores(){ // MODULARIZAR ESTA FUNÇÃO
@@ -29,7 +29,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
           return Card(
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: ListTile(
-                  title: const Text('Professor'),
+                  title: Text(profAtual),
                   enabled: true,
                   trailing: const Icon(Icons.arrow_drop_down),
                   shape: const OutlineInputBorder(),
@@ -53,7 +53,11 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
                                           fontWeight: FontWeight.normal),
                                     ),
                                     onTap: () {
-                                      print("Clicou");
+                                      model!.prof_matricula = professores.data![index].matricula;
+                                      setState(() {
+                                        profAtual = professores.data![index].nome;
+                                      });
+                                      Navigator.of(context).pop();
                                     },
                                   );
                                 }),
@@ -83,7 +87,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
             centerTitle: true,
             elevation: 0,
           ),
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.white,
           body: ProgressHUD(
             child: Form(
               key: globalKey,
@@ -108,7 +112,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
 
         model = arguments["model"] != null ? arguments["model"] : DisciplinaModel();
         route = arguments["route"] != null ? arguments["route"] : null;
-        if(rotaAtual == "/edit-pessoa"){
+        if(rotaAtual == "/edit-pessoa" || rotaAtual == "/edit-disciplina"){
           isEditMode = true;
         }
         setState(() {});
@@ -163,10 +167,11 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
                 },
                 initialValue: model!.codigo == null ? "" : model!.codigo.toString(),
                 // Abaixo configurações das cores do formulário
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                textColor: Colors.black,
+                borderColor: isEditMode ? Colors.grey : Colors.black,
+                borderFocusColor: isEditMode ? Colors.grey : Colors.black,
+                textColor: isEditMode ? Colors.grey : Colors.black,
                 hintColor: Colors.black.withOpacity(.7),
+                isReadonly: isEditMode ? true : false,
               ),
             ),
             Padding(
@@ -195,7 +200,10 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
             const SizedBox(
               height: 20,
             ),
-            loadProfessores(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: loadProfessores(),
+            ),
             Divider(
               height: 20,
               color: Colors.white,

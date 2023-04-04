@@ -5,6 +5,7 @@ import 'Aluno.dart';
 import 'Professor.dart';
 import 'Disciplina.dart';
 import 'AddEditDisciplina.dart';
+import 'ListaAlunos.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: "/",
@@ -17,5 +18,6 @@ void main() => runApp(MaterialApp(
     '/add-pessoa': (context) => AddEditPessoa(),
     '/edit-disciplina': (context) => AddEditDisciplina(),
     '/add-disciplina': (context) => AddEditDisciplina(),
+    '/listar-alunos': (context) => ListaAlunos(),
   }
 ));
