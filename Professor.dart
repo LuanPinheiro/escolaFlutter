@@ -3,6 +3,7 @@ import 'models/CardModelPessoa.dart';
 import 'dbhelper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'models/Pessoa.dart';
+import 'nightmode.dart';
 
 class Professor extends StatefulWidget {
   @override
@@ -19,9 +20,10 @@ class _ProfessorState extends State<Professor> {
         if(professores.hasData){
           return listaProfessores(professores.data);
         }
+
         return const Center(
           child: SpinKitRing(
-            color: Colors.blue,
+            color: Colors.black,
             size: 60,
           ),
         );
@@ -70,7 +72,9 @@ class _ProfessorState extends State<Professor> {
       appBar: AppBar(
         title: Text("Professores"),
         centerTitle: true,
+        backgroundColor: mainColor,
       ),
+      backgroundColor: bgColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
@@ -85,6 +89,7 @@ class _ProfessorState extends State<Professor> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: mainColor,
         onPressed: (){
           Navigator.pushNamed(context, '/add-pessoa', arguments: {"route": "/professores"});
         },

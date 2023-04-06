@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dbhelper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'models/DisciplinaModel.dart';
+import 'nightmode.dart';
 
 class Disciplina extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _DisciplinaState extends State<Disciplina> {
         }
         return const Center(
           child: SpinKitRing(
-            color: Colors.blue,
+            color: Colors.black,
             size: 60,
           ),
         );
@@ -68,7 +69,9 @@ class _DisciplinaState extends State<Disciplina> {
       appBar: AppBar(
         title: Text("Disciplinas"),
         centerTitle: true,
+        backgroundColor: mainColor,
       ),
+      backgroundColor: bgColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
@@ -82,6 +85,7 @@ class _DisciplinaState extends State<Disciplina> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: mainColor,
         onPressed: (){
           Navigator.pushNamed(context, '/add-disciplina', arguments: {
             "route": "/disciplinas",

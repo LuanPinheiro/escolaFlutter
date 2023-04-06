@@ -133,7 +133,9 @@ bool temNumeros(String texto){
 }
 
 bool temCaracteres(String texto) {
-  return RegExp(r'[a-zA-Z]').hasMatch(texto);
+  bool retorno = RegExp(r'[a-zA-a\p]').hasMatch(texto);
+  print(retorno);
+  return retorno;
 }
 
 bool temCaracteresIguais(String texto) {

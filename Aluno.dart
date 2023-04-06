@@ -3,6 +3,7 @@ import 'models/CardModelPessoa.dart';
 import 'dbhelper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'models/Pessoa.dart';
+import 'nightmode.dart';
 
 class Aluno extends StatefulWidget {
   @override
@@ -10,8 +11,6 @@ class Aluno extends StatefulWidget {
 }
 
 class _AlunoState extends State<Aluno> {
-
-
   // Carrega do banco de dados os alunos em uma lista alunos
   Widget loadAlunos(){
     return FutureBuilder(
@@ -22,7 +21,7 @@ class _AlunoState extends State<Aluno> {
         }
         return const Center(
           child: SpinKitRing(
-            color: Colors.blue,
+            color: Colors.black,
             size: 60,
           ),
         );
@@ -66,12 +65,13 @@ class _AlunoState extends State<Aluno> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Alunos"),
         centerTitle: true,
+        backgroundColor: mainColor,
       ),
+      backgroundColor: bgColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
@@ -85,6 +85,7 @@ class _AlunoState extends State<Aluno> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: mainColor,
         onPressed: (){
           Navigator.pushNamed(context, '/add-pessoa', arguments: {
             "route": "/alunos",

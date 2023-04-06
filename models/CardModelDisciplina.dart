@@ -1,5 +1,6 @@
 import 'package:escolaflutter/models/DisciplinaModel.dart';
 import 'package:escolaflutter/models/MatriculadosModel.dart';
+import 'package:escolaflutter/nightmode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,12 +17,12 @@ class CardModelDisciplina extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 0,
+        elevation: 10,
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Container(
           width: 200,
           decoration: BoxDecoration(
-            color: Colors.grey[400],
+            color: cardColor,
           ),
           child: pessoaWidget(context),
         )
@@ -112,7 +113,7 @@ class CardModelDisciplina extends StatelessWidget {
                               // Criando um botão de adicionar aluno em disciplina, no container da mesma
                               child: const Icon(Icons.add_circle_rounded, color: Colors.green),
                               onTap: () {
-                                showModalBottomSheet(context: context, builder: (_) {
+                                showModalBottomSheet(backgroundColor: cardColor,context: context, builder: (_) {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -121,6 +122,7 @@ class CardModelDisciplina extends StatelessWidget {
                                         child: Text(
                                           "Alunos Disponíveis",
                                           style: TextStyle(
+                                            color: isDarkMode ? Colors.white : Colors.black,
                                             fontSize: 25,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -138,7 +140,8 @@ class CardModelDisciplina extends StatelessWidget {
                                                 return ListTile(
                                                   title: Text(
                                                     alunos.data![index].nome,
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
+                                                        color: isDarkMode ? Colors.white : Colors.black,
                                                         fontSize: 20,
                                                         fontWeight: FontWeight.normal),
                                                   ),

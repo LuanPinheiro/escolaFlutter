@@ -6,6 +6,7 @@ import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'models/DisciplinaModel.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Validar.dart';
+import 'nightmode.dart';
 
 class AddEditDisciplina extends StatefulWidget {
   @override
@@ -20,7 +21,15 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
   String route = "";
   String? selected;
   String profAtual = "Professores";
+  List? listaDisc;
 
+  void getDisciplinas() async{
+    print("AQUI");
+    final disciplinas = await ApiSql().fetchDisciplinas();
+    listaDisc = disciplinas;
+
+    print(listaDisc![0].codigo);
+  }
   // Carrega do banco de dados os alunos em uma lista alunos
   Widget loadProfessores(){ // MODULARIZAR ESTA FUNÇÃO
     return FutureBuilder(
@@ -28,6 +37,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> professores) {
         if(professores.hasData){
           return Card(
+            color: bgColor,
               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: ListTile(
                   title: Text(profAtual),
@@ -70,7 +80,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
         }
         return const Center(
           child: SpinKitRing(
-            color: Colors.blue,
+            color: Colors.black,
             size: 60,
           ),
         );
@@ -87,8 +97,9 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
             title: const Text("Adicionar/Editar"),
             centerTitle: true,
             elevation: 0,
+            backgroundColor: mainColor,
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: bgColor,
           body: ProgressHUD(
             child: Form(
               key: globalKey,
@@ -105,7 +116,7 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
   @override
   void initState(){
     super.initState();
-
+    getDisciplinas();
     Future.delayed(Duration.zero, () {
       if(ModalRoute.of(context)?.settings.arguments != null){
         final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
@@ -167,10 +178,25 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
                   if(onValidateVal.isEmpty){
                     return "O campo código não pode ser vazio";
                   }
+                  if(onValidateVal.length != 6){
+                    return "O campo código deve ter 6 letras/numeros";
+                  }
+                  String parteCaracteres = onValidateVal.substring(0,3);
+                  String parteNumeros = onValidateVal.substring(3);
+                  if(temNumeros(parteCaracteres) || temCaracteres(parteNumeros)){
+                    return "Formato inválido (AAA111)";
+                  }
+                  if(!isEditMode){
+                    for(int i = 0; i < listaDisc!.length; i++){
+                      if(listaDisc![i].codigo == onValidateVal){
+                        return "Código já existente";
+                      }
+                    }
+                  }
                   return null;
                 },
                     (onSavedVal) {
-                  model!.codigo = onSavedVal;
+                  model!.codigo = onSavedVal.toString().toUpperCase();
                 },
                 initialValue: model!.codigo == null ? "" : model!.codigo.toString(),
                 // Abaixo configurações das cores do formulário
@@ -189,7 +215,16 @@ class _AddEditDisciplina extends State<AddEditDisciplina> {
                 "Semestre da Disciplina",
                     (onValidateVal) {
                   if(onValidateVal.isEmpty){
-                    return "O campo Sexo não pode ser vazio";
+                    return "O campo Semestre não pode ser vazio";
+                  }
+                  if(onValidateVal.length != 6){
+                    return "Semestre deve haver 6 caracteres";
+                  }
+                  String ano = onValidateVal.substring(0,4);
+                  String ponto = onValidateVal[4];
+                  String semestre = onValidateVal.substring(5);
+                  if(temCaracteres(ano) || ponto != "." || (semestre != "1" && semestre != "2")) {
+                    return "Formato inválido (ANO.SEMESTRE[1,2])";
                   }
                   return null;
                 },

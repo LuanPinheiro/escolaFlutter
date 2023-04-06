@@ -1,3 +1,5 @@
+import 'package:escolaflutter/nightmode.dart';
+
 import 'Pessoa.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +14,12 @@ class CardModelPessoa extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
+      elevation: 10,
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Container(
         width: 200,
         decoration: BoxDecoration(
-          color: Colors.grey[400],
+          color: cardColor,
         ),
         child: pessoaWidget(context),
       )

@@ -2,7 +2,7 @@ import 'package:escolaflutter/models/DisciplinaModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dbhelper.dart';
-import 'models/MatriculadosModel.dart';
+import 'nightmode.dart';
 
 class ListaAlunos extends StatefulWidget {
   const ListaAlunos({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _ListaAlunosState extends State<ListaAlunos> {
         }
         return const Center(
           child: SpinKitRing(
-            color: Colors.blue,
+            color: Colors.black,
             size: 60,
           ),
         );
@@ -66,7 +66,8 @@ class _ListaAlunosState extends State<ListaAlunos> {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       child: Text(
                         "Matrícula: ${alunos[index].matricula_aluno.toString()}",
-                        style: const TextStyle(
+                        style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -75,11 +76,11 @@ class _ListaAlunosState extends State<ListaAlunos> {
                     subtitle: Divider(
                       thickness: 3,
                       height: 30,
-                      color: Colors.blue,
+                      color: mainColor,
                     ),
                     trailing: GestureDetector(
                       // Criando um botão de editar pessoa, no container da mesma
-                      child: const Icon(Icons.remove_circle_rounded),
+                      child: Icon(Icons.remove_circle_rounded, color: Colors.red[600]),
                       onTap: () async {
                         await ApiSql().deleteAlunoEmDisciplina(alunos[index].matricula_aluno, model!.codigo);
                         setState(() {});
@@ -100,7 +101,9 @@ class _ListaAlunosState extends State<ListaAlunos> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Lista de Alunos em Disciplina"),
+        backgroundColor: mainColor,
       ),
+      backgroundColor: bgColor,
       body: loadAlunos(),
     );
   }

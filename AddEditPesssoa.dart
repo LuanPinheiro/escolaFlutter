@@ -4,6 +4,7 @@ import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'models/Pessoa.dart';
 import 'Validar.dart';
+import 'nightmode.dart';
 
 class AddEditPessoa extends StatefulWidget {
   @override
@@ -12,6 +13,9 @@ class AddEditPessoa extends StatefulWidget {
 
 class _AddEditPessoaState extends State<AddEditPessoa> {
   static final GlobalKey<FormState> globalKey = GlobalKey<FormState>();
+  bool? checkF = true;
+  bool? checkM = false;
+  bool? checkI = false;
   bool isAPICallProcess = false;
   Pessoa? model;
   bool isEditMode = false;
@@ -27,8 +31,9 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
             title: const Text("Adicionar/Editar"),
             centerTitle: true,
             elevation: 0,
+            backgroundColor: mainColor,
           ),
-          backgroundColor: Colors.grey,
+          backgroundColor: bgColor,
           body: ProgressHUD(
             child: Form(
               key: globalKey,
@@ -53,6 +58,17 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
 
         model = arguments["model"] != null ? arguments["model"] : Pessoa();
         route = arguments["route"] != null ? arguments["route"] : null;
+
+        if(model!.sexo != null) {
+          if(model!.sexo == "Masculino"){
+            checkF = false;
+            checkM = true;
+          }
+          else if(model!.sexo == "Intersexo"){
+            checkI = true;
+            checkF = false;
+          }
+        }
         if(rotaAtual == "/edit-pessoa"){
           isEditMode = true;
         }
@@ -107,13 +123,13 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                   if(onValidateVal.isEmpty){
                     return "O campo CPF não pode ser vazio";
                   }
-                  if(temCaracteres(onValidateVal)){
+                  if(temCaracteres(onValidateVal) == true){
                     return "CPF com apenas números";
                   }
-                  else if(onValidateVal.length != 11){
+                  if(onValidateVal.length != 11){
                     return "CPF deve ter 11 números";
                   }
-                  else if(digitosVerificadores(onValidateVal) == false){
+                  if(digitosVerificadores(onValidateVal) == false){
                     return "CPF Inválido";
                   }
                   return null;
@@ -131,26 +147,58 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: FormHelper.inputFieldWidget(
-                context,
-                "sexo",
-                "Sexo da Pessoa",
-                    (onValidateVal) {
-                  if(onValidateVal.isEmpty){
-                    return "O campo Sexo não pode ser vazio";
-                  }
-                  return null;
-                },
-                    (onSavedVal) {
-                  model!.sexo = onSavedVal;
-                },
-                initialValue: model!.sexo == null ? "" : model!.sexo.toString(),
-                // Abaixo configurações das cores do formulário
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                textColor: Colors.black,
-                hintColor: Colors.black.withOpacity(.7),
-              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Checkbox(
+                          checkColor: Colors.white,
+                          value: checkF,
+                          onChanged: (value){
+                            setState(() {
+                              checkF = value;
+                              checkM = false;
+                              checkI = false;
+                            });
+                          }),
+                      Text("Feminino"),
+                    ],
+                  ),
+                  SizedBox(width: 30),
+                  Column(
+                    children: [
+                      Checkbox(
+                          checkColor: Colors.white,
+                          value: checkM,
+                          onChanged: (value){
+                            setState(() {
+                              checkM = value;
+                              checkF = false;
+                              checkI = false;
+                            });
+                          }),
+                      Text("Masculino"),
+                    ],
+                  ),
+                  SizedBox(width: 30),
+                  Column(
+                    children: [
+                      Checkbox(
+                          checkColor: Colors.white,
+                          value: checkI,
+                          onChanged: (value){
+                            setState(() {
+                              checkI = value;
+                              checkM = false;
+                              checkF = false;
+                            });
+                          }),
+                      Text("Intersexo"),
+                    ],
+                  ),
+                ],
+              )
             ),
             const SizedBox(
               height: 20,
@@ -169,6 +217,15 @@ class _AddEditPessoaState extends State<AddEditPessoa> {
                     output = "Professor";
                   }
 
+                  if(checkF == true){
+                    model!.sexo = "Feminino";
+                  }
+                  else if(checkM == true){
+                    model!.sexo = "Masculino";
+                  }
+                  else{
+                    model!.sexo = "Intersexo";
+                  }
                   if(isEditMode){
                     ApiSql().updatePessoa(model!.matricula, model!, table);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
